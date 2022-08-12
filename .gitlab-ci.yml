@@ -1,0 +1,16 @@
+stages:
+  - pages
+
+pages:
+  stage: pages
+  image: python:3.7.13-slim-bullseye
+  before_script:
+    - set
+    - pip install pipenv
+    - pipenv install -d
+  script:
+    - pipenv run pdoc3 --html lib/
+    - mv html public
+  artifacts:
+    paths:
+      - public

@@ -1,0 +1,41 @@
+# port = left
+# star = right
+# stern = rear
+# fore = front
+
+common:
+  shot_frequency: 1s
+  root_dir: /opt/datasets
+
+credentials:
+  cameras: &default_camera_creds
+    username: user
+    password: pass
+
+devices:
+  cameras:
+    port_camera:
+      is_enabled: True
+      ip: 192.168.1.1
+    star_camera:
+      is_enabled: False
+      ip: 192.168.1.2
+    stern_camera:
+      is_enabled: True
+      ip: 192.168.1.3
+    fore_camera:
+      is_enabled: True
+      ip: 192.168.1.4
+  lidars:
+    port_lidar:
+      is_enabled: True
+      ip: 192.168.1.5
+    star_lidar:
+      is_enabled: True
+      ip: 192.168.1.6
+    stern_lidar:
+      is_enabled: False
+      ip: 192.168.1.7
+    fore_lidar:
+      is_enabled: True
+      ip: 192.168.1.8
