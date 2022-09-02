@@ -60,11 +60,14 @@ class Entrypoint:
     Returns:
         None
     """
-    # test
-    CONFIG_PATH = 'config/main.yaml'
 
-    def __init__(self) -> None:
-        self.config = yaml.load(open(self.CONFIG_PATH).read(), Loader=yaml.FullLoader)
+    def __init__(self, config_file: str) -> None:
+        """Constructor
+
+        Args:
+            config_file (str): path to configuration file
+        """
+        self.config = yaml.load(open(config_file).read(), Loader=yaml.FullLoader)
         self.file_handler = FileHandler(root_dir=self.config['common']['root_dir'])
         self.threads = []
         self._device_classes = [PortCamera, StarCamera, SternCamera, ForeCamera, PortLidar, StarLidar, SternLidar, ForeLidar]
