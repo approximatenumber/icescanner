@@ -1,44 +1,38 @@
-import time
-from threading import Thread
+from openpylivox import openpylivox
+from lib.devices.common_device import CommonDevice
 from lib.file_handler import FileHandler
 from lib.logger import Logger
+
 
 
 logger = Logger.get_logger("dataset-recorder")
 
 
-class CommonLidar():
+class CommonLidar(CommonDevice):
     def __init__(self, config: str, file_handler: FileHandler) -> None:
+        super().__init__()
         self.config = config
         self.is_enabled = self.config['devices']['lidars'][self.name]['is_enabled']
+        self.ip = self.config['devices']['lidars'][self.name]['ip']
         self.file_handler = file_handler
-        self.is_ok = None
+        self.lidar = openpylivox(showMessages=True, logger=logger)
         self.status = "initialized"
         self.exc = None
     
-    def run(self):
+    def take_shot(self):
+        """Take shot with lidar."""
         logger.info(f"Lidar is ready: {self.name}")
         logger.info(f"Taking shot from lidar: {self.name}")
-        time.sleep(5)
-        logger.warning(f"Lidar stopped: {self.name}")
-
-    def do_diagnostics(self):
-        """Provide self-check to be sure lidar is ok.
-        Saves lidar states according to status.
-        Should be used as a first step to test lidar after initialization.
-        """
-        logger.debug(f"Starting diagnostics for lidar: {self.name}")
-        if not "pingable":
-            self.is_ok = False
-            self.status = "Lidar is unreachable over network"
-        self.is_ok = True
-        logger.info(f"Diagnostics success for lidar: {self.name}")
-        
-    def run(self):
-        logger.info(f"Getting dataset from lidar: {self.name}")
-        self.file_handler.write_file("lidar_data", f"{self.name}.csv")
-        time.sleep(1)
-
+        self.filepath = self.file_handler.get_filepath(self.name)
+        self.lidar.connect(self.config['common']['server_ip'], self.ip, 0, 0, 0)
+        self.lidar.dataStart_RT_B()
+        self.lidar.saveDataToFile(self.filepath, 1, 1)
+        while True:
+            if self.lidar.doneCapturing():
+                self.lidar.closeFile()
+                break
+        self.lidar.dataStop()
+        self.lidar.disconnect()
 
 class PortLidar(CommonLidar):
     name = "port_lidar"

@@ -97,17 +97,17 @@ class Entrypoint:
     def take_shot(self) -> None:
         while True:
             self.file_handler.prepare_for_measurement()
-            self.threads = [PropagatingThread(target=device.run, name=device.name) for device in self.devices]
+            self.threads = [PropagatingThread(target=device.take_shot, name=device.name) for device in self.devices]
             for thread in self.threads:
                 thread.start()
-            logger.info(f"Sleeping {self.shot_frequency} secs...")
-            time.sleep(self.shot_frequency)
             for thread in self.threads:
                 try:
                     thread.join()
                 except Exception:
                     logger.critical(f"Got exception from {thread.name}: {thread.exc}")
                     raise Exception()
+            logger.info(f"Sleeping {self.shot_frequency} secs...")
+            time.sleep(self.shot_frequency)
 
     def do_diagnostics(self):
         for device in self.devices:
