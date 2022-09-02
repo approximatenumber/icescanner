@@ -1,3 +1,4 @@
+from pathlib import Path
 from datetime import datetime
 import os
 from lib.logger import Logger
@@ -22,6 +23,10 @@ class FileHandler():
             os.makedirs(self.root_dir)
             logger.info(f"Root directory created: {self.root_dir}")
         self.folder = None
+    
+    def get_filepath(self, filename: str) -> str:
+        """Path to file to write."""
+        return Path(self.folder, filename)
     
     def prepare_for_measurement(self) -> None:
         """Create folder with timestamp, where all files will be stored."""
