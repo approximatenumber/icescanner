@@ -32,7 +32,7 @@ Main configuration file.
     * `is_enabled`: use `False` to disable this device
 
 ## Configuration example:
-```
+```yaml
 # port = left
 # star = right
 # stern = rear
