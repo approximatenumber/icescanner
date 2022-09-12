@@ -26,7 +26,10 @@ class CommonLidar(CommonDevice):
         self.filepath = self.file_handler.get_filepath(self.name)
         self.lidar.connect(self.config['common']['server_ip'], self.ip, 0, 0, 0)
         self.lidar.dataStart_RT_B()
-        self.lidar.saveDataToFile(self.filepath, 1, 1)
+        self.lidar.saveDataToFile(
+            self.filepath,
+            secsToWait=1,
+            duration=self.config['common']['exposure'])
         while True:
             if self.lidar.doneCapturing():
                 self.lidar.closeFile()

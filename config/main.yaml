@@ -6,6 +6,7 @@
 common:
   server_ip: 192.168.0.168
   shot_frequency: 30s
+  exposure: 1s
   root_dir: /opt/datasets
 
 credentials:
