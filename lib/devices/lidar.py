@@ -2,6 +2,7 @@ from openpylivox import openpylivox
 from lib.devices.common_device import CommonDevice
 from lib.file_handler import FileHandler
 from lib.logger import Logger
+from lib.utils import parse_string_to_secs
 
 
 
@@ -21,7 +22,6 @@ class CommonLidar(CommonDevice):
     
     def take_shot(self):
         """Take shot with lidar."""
-        logger.info(f"Lidar is ready: {self.name}")
         logger.info(f"Taking shot from lidar: {self.name}")
         self.filepath = self.file_handler.get_filepath(self.name)
         self.lidar.connect(self.config['common']['server_ip'], self.ip, 0, 0, 0)
@@ -29,7 +29,7 @@ class CommonLidar(CommonDevice):
         self.lidar.saveDataToFile(
             self.filepath,
             secsToWait=1,
-            duration=self.config['common']['exposure'])
+            duration=parse_string_to_secs(self.config['common']['exposure']))
         while True:
             if self.lidar.doneCapturing():
                 self.lidar.closeFile()
