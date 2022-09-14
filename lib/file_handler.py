@@ -42,6 +42,7 @@ class FileHandler():
         self.folder = os.path.join(self.root_dir, datetime.now().strftime(f"%Y%m%d_%H%M%S"))
         os.makedirs(self.folder)
         logger.info(f"Created dir {self.folder}")
+        self.create_metadata_file()
         
     def write_file(self, data: str, filename: str) -> None:
         """Write file according to data and filename.
@@ -63,9 +64,8 @@ class FileHandler():
         filename = "metadata.json"
         path = os.path.join(self.folder, filename)
         with open(path, 'w') as f:
-            json_data = json.load(data)
-            json.dump(json_data, f)
-        logger.debug(f"Created metadata file {path} with data: {json_data}")
+            json.dump(data, f)
+        logger.debug(f"Created metadata file {path} with data: {data}")
     
     def update_metadata_file(self, name: str, data: Dict):
         """Create metadata file
@@ -76,9 +76,9 @@ class FileHandler():
         filename = "metadata.json"
         path = os.path.join(self.folder, filename)
         with open(path) as f:
-            json_data = json.load(f.read())
+            json_data = json.load(f)
             logger.debug(f"Existing metadata: {json_data}")
         json_data[name].update(data)
         with open(path, 'w') as f:
-            json.dump(json_data, f)
+            json.dump(json_data, f, indent=4)
         logger.debug(f"Metadata {path} updated with data: {json_data}")

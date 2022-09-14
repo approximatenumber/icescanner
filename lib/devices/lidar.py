@@ -36,7 +36,8 @@ class CommonLidar(CommonDevice):
                 break
         self.lidar.dataStop()
         self.lidar.disconnect()
-        self.process_dataset(filepath)
+        csv_filepath = str(filepath) + '.csv'
+        self.process_dataset(csv_filepath)
         
     def process_dataset(self, filepath: str) -> None:
         """Process dataset after taking shot using algrorithm.
