@@ -1,6 +1,8 @@
 from pathlib import Path
 from datetime import datetime
 import os
+from typing import Dict
+import json
 from lib.logger import Logger
 
 
@@ -12,11 +14,18 @@ class FileHandler():
     Used by all operators which saves data.
     """
     
-    def __init__(self, root_dir="/tmp") -> None:
+    DEFAULT_METADATA = {
+        "port_lidar": {},
+        "star_lidar": {},
+        "stern_lidar": {},
+        "fore_lidar": {}
+    }
+    
+    def __init__(self, root_dir=os.environ['HOME']) -> None:
         """Constructor
 
         Args:
-            root_dir (str, optional): root directory to store files. Defaults to "/tmp".
+            root_dir (str, optional): root directory to store files. Default is $HOME.
         """
         self.root_dir = root_dir
         if not os.path.isdir(self.root_dir):
@@ -33,6 +42,7 @@ class FileHandler():
         self.folder = os.path.join(self.root_dir, datetime.now().strftime(f"%Y%m%d_%H%M%S"))
         os.makedirs(self.folder)
         logger.info(f"Created dir {self.folder}")
+        self.create_metadata_file()
         
     def write_file(self, data: str, filename: str) -> None:
         """Write file according to data and filename.
@@ -45,4 +55,30 @@ class FileHandler():
         with open(path, 'w') as f:
             f.write(data)
         logger.info(f"Written file: {path}")
+        
+    def create_metadata_file(self, data: Dict = DEFAULT_METADATA):
+        """Create metadata file.
+        Args:
+            data (Dict, optional): data to write. Defaults to DEFAULT_METADATA.
+        """
+        filename = "metadata.json"
+        path = os.path.join(self.folder, filename)
+        with open(path, 'w') as f:
+            json.dump(data, f)
+        logger.debug(f"Created metadata file {path} with data: {data}")
     
+    def update_metadata_file(self, name: str, data: Dict):
+        """Create metadata file
+        Args:
+            name (str): name of device?
+            data (Dict): data dict with meta information
+        """
+        filename = "metadata.json"
+        path = os.path.join(self.folder, filename)
+        with open(path) as f:
+            json_data = json.load(f)
+            logger.debug(f"Existing metadata: {json_data}")
+        json_data[name].update(data)
+        with open(path, 'w') as f:
+            json.dump(json_data, f, indent=4)
+        logger.debug(f"Metadata {path} updated with data: {json_data}")

@@ -3,7 +3,7 @@ from lib.devices.common_device import CommonDevice
 from lib.file_handler import FileHandler
 from lib.logger import Logger
 from lib.utils import parse_string_to_secs
-
+from lib.algo.input_filter import is_dataset_valid
 
 
 logger = Logger.get_logger("dataset-recorder")
@@ -23,11 +23,11 @@ class CommonLidar(CommonDevice):
     def take_shot(self):
         """Take shot with lidar."""
         logger.info(f"Taking shot from lidar: {self.name}")
-        self.filepath = self.file_handler.get_filepath(self.name)
+        filepath = self.file_handler.get_filepath(self.name)
         self.lidar.connect(self.config['common']['server_ip'], self.ip, 0, 0, 0)
         self.lidar.dataStart_RT_B()
         self.lidar.saveDataToFile(
-            self.filepath,
+            filepath,
             secsToWait=1,
             duration=parse_string_to_secs(self.config['common']['exposure']))
         while True:
@@ -36,6 +36,19 @@ class CommonLidar(CommonDevice):
                 break
         self.lidar.dataStop()
         self.lidar.disconnect()
+        csv_filepath = str(filepath) + '.csv'
+        self.process_dataset(csv_filepath)
+        
+    def process_dataset(self, filepath: str) -> None:
+        """Process dataset after taking shot using algrorithm.
+        Args:
+            filepath (str): Path to saved file with dataset
+        """
+        input_filter_success = is_dataset_valid(filepath)
+        metadata = {
+            "input_filter_success": input_filter_success
+        }
+        self.file_handler.update_metadata_file(self.name, metadata)
 
 class PortLidar(CommonLidar):
     name = "port_lidar"
