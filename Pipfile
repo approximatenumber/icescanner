@@ -11,6 +11,7 @@ openpylivox-pkg = {ref = "icebreaker", git = "https://github.com/approximatenumb
 pandas = "==1.3.5"
 matplotlib = "==3.5.3"
 seaborn = "==0.12.0"
+click = "==8.1.3"
 
 [requires]
 python_version = "3.7"
