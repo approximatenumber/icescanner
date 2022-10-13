@@ -1,17 +1,19 @@
 stages:
-  - pages
+  - build
 
-pages:
-  stage: pages
+package:
+  stage: build
   image: python:3.7.13-slim-bullseye
   before_script:
-    - set
     - apt update && apt install -y git
-    - pip install pipenv
-    - pipenv install -d
+    - export TAG=$(git describe --tags --abbrev=0)
+    - export VERSION="$TAG.$CI_PIPELINE_ID"
+    - echo "Version is $VERSION"
+    - echo "__version__ = \"$VERSION\"" > icescanner/version.py
   script:
-    - pipenv run pdoc3 --html lib/
-    - mv html public
+    - pip install build
+    - python -m build
   artifacts:
     paths:
-      - public
+      - dist/*.whl
+    expire_in: "5d"
