@@ -44,15 +44,16 @@ class FileHandler():
         logger.info(f"Created dir {self.folder}")
         self.create_metadata_file()
         
-    def write_file(self, data: str, filename: str) -> None:
+    def write_file(self, data: str, filename: str, mode='w') -> None:
         """Write file according to data and filename.
 
         Args:
             data (str): data to save
             filename (str): filename to save
+            mode (str): file mode
         """
         path = os.path.join(self.folder, filename)
-        with open(path, 'w') as f:
+        with open(path, mode) as f:
             f.write(data)
         logger.info(f"Written file: {path}")
         

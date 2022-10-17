@@ -11,8 +11,8 @@ common:
 
 credentials:
   cameras: &default_camera_creds
-    username: user
-    password: pass
+    username: admin
+    password: ice1ice2ice3
 
 devices:
   cameras:

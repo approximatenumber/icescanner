@@ -1,2 +1,0 @@
-class DeviceUnreachableError(Exception):
-    pass
