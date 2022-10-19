@@ -4,10 +4,13 @@ import logging
 import click
 from icescanner.entrypoint import Entrypoint
 from icescanner.logger import Logger
+from icescanner.version import __version__
 
 logger = Logger.get_logger("dataset-recorder")
 
-@click.group()
+@click.group(invoke_without_command=True, no_args_is_help=True)
+@click.pass_context
+@click.version_option(__version__, prog_name="icescanner")
 def cli():
     pass
 
