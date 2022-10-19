@@ -11,9 +11,15 @@ package:
     - echo "Version is $VERSION"
     - echo "__version__ = \"$VERSION\"" > icescanner/version.py
   script:
+    # build package
     - pip install build
     - python -m build
+    # build dependencies
+    - mkdir wheels
+    - pip wheel -w wheels .
   artifacts:
+    name: icescanner-$VERSION
     paths:
-      - dist/*.whl
+      - wheels
+      - icescanner/config/main.yaml
     expire_in: "5d"
