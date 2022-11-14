@@ -3,6 +3,7 @@ from datetime import datetime
 import os
 from typing import Dict
 import json
+import shutil
 from icescanner.logger import Logger
 
 
@@ -21,13 +22,14 @@ class FileHandler():
         "fore_lidar": {}
     }
     
-    def __init__(self, root_dir=os.environ['HOME']) -> None:
+    def __init__(self, root_dir=os.environ['HOME'], config: Dict[Dict]={}) -> None:
         """Constructor
 
         Args:
             root_dir (str, optional): root directory to store files. Default is $HOME.
         """
         self.root_dir = root_dir
+        self.config = config
         if not os.path.isdir(self.root_dir):
             os.makedirs(self.root_dir)
             logger.info(f"Root directory created: {self.root_dir}")
@@ -83,3 +85,14 @@ class FileHandler():
         with open(path, 'w') as f:
             json.dump(json_data, f, indent=4)
         logger.debug(f"Metadata {path} updated with data: {json_data}")
+
+    def cleanup_folder(self) -> None:
+        """Archive folder with datasets and other data."""
+        if not self.folder:
+            logger.error("Folder is not set. Nothing to cleanup.")
+            return
+        shutil.make_archive(Path(self.root_dir, self.folder), 'zip', self.folder)
+        logger.debug(f"Archived folder: {self.folder}")
+        if self.config['common'].get('remove_folder'):
+            shutil.rmtree(self.folder)
+            logger.debug(f"Removed folder: {self.folder}")

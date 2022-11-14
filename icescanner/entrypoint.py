@@ -68,7 +68,9 @@ class Entrypoint:
             config_file (str): path to configuration file
         """
         self.config = yaml.load(open(config_file).read(), Loader=yaml.FullLoader)
-        self.file_handler = FileHandler(root_dir=self.config['common']['root_dir'])
+        self.file_handler = FileHandler(
+            root_dir=self.config['common']['root_dir'],
+            config=self.config)
         self.threads = []
         self._device_classes = [PortCamera, StarCamera, SternCamera, ForeCamera, PortLidar, StarLidar, SternLidar, ForeLidar]
         self._devices = []
@@ -77,7 +79,7 @@ class Entrypoint:
     def devices(self) -> List:
         """Device list.
         Device may be disabled in configuration with 'is_enabled: False'
-        Returns:
+        Returns:config: Dict[Dict]={}
             List[DeviceClass]: list of initialized devices
         """
         if not self._devices:
@@ -106,6 +108,7 @@ class Entrypoint:
             for thread in self.threads:
                 try:
                     thread.join()
+                    self.file_handler.cleanup_folder()
                 except Exception:
                     logger.critical(f"Got exception from {thread.name}: {thread.exc}")
                     raise Exception()
