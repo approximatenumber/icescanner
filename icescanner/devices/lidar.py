@@ -44,7 +44,7 @@ class CommonLidar(CommonDevice):
         Args:
             filepath (str): Path to saved file with dataset
         """
-        input_filter_success = is_dataset_valid(filepath)
+        input_filter_success = is_dataset_valid(filepath, config=self.config)
         metadata = {
             "input_filter_success": input_filter_success
         }

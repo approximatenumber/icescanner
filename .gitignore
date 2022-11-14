@@ -3,4 +3,5 @@ __pycache__
 html/
 build/
 dist/
+wheels/
 *.egg-info/

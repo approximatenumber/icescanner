@@ -1,9 +1,6 @@
-import os
 import warnings
-
+from typing import Dict
 import pandas as pd
-import seaborn as sns
-from matplotlib import pyplot as plt
 from icescanner.logger import Logger
 
 logger = Logger.get_logger("dataset-recorder")
@@ -11,15 +8,16 @@ logger = Logger.get_logger("dataset-recorder")
 
 warnings.filterwarnings('ignore')
 
-def is_dataset_valid(filepath: str) -> bool:
-    """_summary_
+def is_dataset_valid(filepath: str, config: Dict[Dict]) -> bool:
+    """Input filter
 
     Args:
-        filepath (str): _description_
+        filepath (str): path to dataset
 
     Returns:
-        _type_: _description_
+        bool: is dataset valid for further processing
     """
+    config = config  # now config is available
     df1 = pd.read_csv(filepath)
     df1.drop(['Time'],axis=1,inplace=True)
     if ((df1[lambda x: ((x['//X']<=4.34) & (x['//X']>=1.3))]['Inten-sity'].mean()>20) and ((df1[lambda x: ((x['//X']<=4.34) & (x['//X']>=1.3))]['Inten-sity'].mean()<60))):

@@ -8,6 +8,7 @@ common:
   shot_frequency: 30s
   exposure: 1s
   root_dir: /opt/datasets
+  remove_folder: False
 
 credentials:
   cameras: &default_camera_creds
