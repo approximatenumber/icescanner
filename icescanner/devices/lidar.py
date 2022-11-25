@@ -16,7 +16,10 @@ class CommonLidar(CommonDevice):
         self.is_enabled = self.config['devices']['lidars'][self.name]['is_enabled']
         self.ip = self.config['devices']['lidars'][self.name]['ip']
         self.file_handler = file_handler
-        self.lidar = openpylivox(showMessages=True, logger=logger)
+        self.lidar = openpylivox(
+            showMessages=True,
+            logger=logger,
+            debug_data=self.config['devices']['lidars'][self.name].get('debug_data', False))
         self.status = "initialized"
         self.exc = None
     
