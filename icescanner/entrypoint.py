@@ -61,13 +61,15 @@ class Entrypoint:
         None
     """
 
-    def __init__(self, config_file: str) -> None:
+    def __init__(self, config_file: str, oneshot: bool = False) -> None:
         """Constructor
 
         Args:
             config_file (str): path to configuration file
+            oneshot (bool, optional): Exit after one (single) shot. Defaults to False.
         """
         self.config = yaml.load(open(config_file).read(), Loader=yaml.FullLoader)
+        self.oneshot = oneshot
         self.file_handler = FileHandler(
             root_dir=self.config['common']['root_dir'],
             config=self.config)
@@ -100,7 +102,12 @@ class Entrypoint:
         return parse_string_to_secs(self.config['common']['shot_frequency'])
     
     def take_shot(self) -> None:
-        while True:
+        """Main function to take dataset and photo
+        Raises:
+            Exception: common exception
+        """
+        stop = False
+        while not stop:
             self.file_handler.prepare_for_measurement()
             self.threads = [PropagatingThread(target=device.take_shot, name=device.name) for device in self.devices]
             for thread in self.threads:
@@ -112,8 +119,11 @@ class Entrypoint:
                 except Exception:
                     logger.critical(f"Got exception from {thread.name}: {thread.exc}")
                     raise Exception()
+            if self.oneshot:
+                stop = True
             logger.info(f"Sleeping {self.shot_frequency} secs...")
             time.sleep(self.shot_frequency)
+        logger.info("Process stopped")
 
     def do_diagnostics(self):
         for device in self.devices:

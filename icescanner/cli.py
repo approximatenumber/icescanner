@@ -11,16 +11,17 @@ logger = Logger.get_logger("dataset-recorder")
 @click.group(invoke_without_command=True, no_args_is_help=True)
 @click.pass_context
 @click.version_option(__version__, prog_name="icescanner")
-def cli():
+def cli(*args):
     pass
 
 @click.command(help="run the main application")
 @click.argument('configuration_file', type=click.Path(exists=True))
+@click.option('--oneshot', is_flag=True, help="One shot mode")
 @click.option('--debug', is_flag=True, help="Debug mode")
-def run(configuration_file: str, debug: bool):
+def run(configuration_file: str, oneshot: bool, debug: bool) -> None:
     if debug:
         logger.setLevel(logging.DEBUG)
-    entrypoint = Entrypoint(config_file=configuration_file)
+    entrypoint = Entrypoint(config_file=configuration_file, oneshot=oneshot)
     entrypoint.do_diagnostics()
     entrypoint.take_shot()
     entrypoint.stop()

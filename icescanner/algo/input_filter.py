@@ -8,7 +8,7 @@ logger = Logger.get_logger("dataset-recorder")
 
 warnings.filterwarnings('ignore')
 
-def is_dataset_valid(filepath: str, config: Dict[Dict]) -> bool:
+def is_dataset_valid(filepath: str, config: Dict) -> bool:
     """Input filter
 
     Args:
