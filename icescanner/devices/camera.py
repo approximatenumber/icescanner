@@ -35,10 +35,11 @@ class CommonCamera(CommonDevice):
         It gets image from RTSP stream and saves it as a picture.
         """
         logger.info(f"Getting picture from cam: {self.name}")
+        logger.debug(f"Using {self.name}camera URL: {self.url}")
         shot = cv2.VideoCapture(self.url)
         success, image = shot.read()
         if not success:
-            logger.error(f"Cannot get data from camera {self.name}: {e}")
+            logger.error(f"Cannot get data from camera {self.name} ({self.ip})!")
             raise DeviceDataError("Device Data error")
         self.file_handler.write_file(
             numpy.array(cv2.imencode(f'.{_format}', image)[1]).tostring(),
