@@ -22,7 +22,7 @@ class FileHandler():
         "fore_lidar": {}
     }
     
-    def __init__(self, root_dir=os.environ['HOME'], config: Dict[Dict]={}) -> None:
+    def __init__(self, root_dir=os.environ['HOME'], config: Dict={}) -> None:
         """Constructor
 
         Args:
