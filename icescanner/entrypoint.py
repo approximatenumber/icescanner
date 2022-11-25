@@ -106,8 +106,7 @@ class Entrypoint:
         Raises:
             Exception: common exception
         """
-        stop = False
-        while not stop:
+        while True:
             self.file_handler.prepare_for_measurement()
             self.threads = [PropagatingThread(target=device.take_shot, name=device.name) for device in self.devices]
             for thread in self.threads:
@@ -122,7 +121,7 @@ class Entrypoint:
                     raise Exception()
             if self.oneshot:
                 logger.warning("oneshot mode, stopping")
-                stop = True
+                return
             logger.info(f"Sleeping {self.shot_frequency} secs...")
             time.sleep(self.shot_frequency)
         logger.info("Process stopped")
