@@ -121,6 +121,7 @@ class Entrypoint:
                     logger.critical(f"Got exception from {thread.name}: {thread.exc}")
                     raise Exception()
             if self.oneshot:
+                logger.warning("oneshot mode, stopping")
                 stop = True
             logger.info(f"Sleeping {self.shot_frequency} secs...")
             time.sleep(self.shot_frequency)
