@@ -115,7 +115,8 @@ class Entrypoint:
             for thread in self.threads:
                 try:
                     thread.join()
-                    self.file_handler.cleanup_folder()
+                    if self.config['common'].get('archive_folder'):
+                        self.file_handler.cleanup_folder()
                 except Exception:
                     logger.critical(f"Got exception from {thread.name}: {thread.exc}")
                     raise Exception()

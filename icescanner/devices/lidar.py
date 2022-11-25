@@ -44,7 +44,11 @@ class CommonLidar(CommonDevice):
         Args:
             filepath (str): Path to saved file with dataset
         """
-        input_filter_success = is_dataset_valid(filepath, config=self.config)
+        try:
+            input_filter_success = is_dataset_valid(filepath, config=self.config)
+        except Exception as err:
+            logger.error(f"Got exception from input filter: {err}")
+            input_filter_success = False
         metadata = {
             "input_filter_success": input_filter_success
         }

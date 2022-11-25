@@ -9,6 +9,7 @@ common:
   exposure: 1s
   root_dir: /opt/datasets
   remove_folder: False
+  archive_folder: False
 
 credentials:
   cameras: &default_camera_creds
