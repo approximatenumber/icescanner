@@ -28,7 +28,7 @@ class CommonLidar(CommonDevice):
         logger.info(f"Taking shot from lidar: {self.name}")
         filepath = self.file_handler.get_filepath(self.name)
         self.lidar.connect(self.config['common']['server_ip'], self.ip, 0, 0, 0)
-        logger.lidarStatusCodes()
+        self.lidar.lidarStatusCodes()
         logger.debug(f"Lidar {self.name} firmware version: {self.lidar._firmware}")
         self.lidar.dataStart_RT_B()
         self.lidar.saveDataToFile(
